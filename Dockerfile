@@ -2,7 +2,6 @@ FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1
 
-# System dependencies for Odoo
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
@@ -17,16 +16,16 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-# Copy Odoo source
 COPY . /app
 
-# Install Python deps
 RUN pip install --upgrade pip && \
     pip install wheel && \
     pip install -r requirements.txt
 
-# Default command for Railway – use PORT env var
+# 👉 yahan non-root user bana ke use par switch kar rahe hain
+RUN useradd -m odoo && chown -R odoo /app
+USER odoo
+
 CMD ["bash", "-c", "python odoo-bin \
     --http-port=$PORT \
     --http-interface=0.0.0.0 \
