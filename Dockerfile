@@ -27,4 +27,4 @@ RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
 # Default command for Railway – use PORT env var
-CMD ["bash", "-c", "python odoo-bin --http-port=$PORT --db_host=$DB_HOST --db_port=$DB_PORT --db_user=$DB_USER --db_password=$DB_PASSWORD"]
+CMD ["bash", "-c", "python odoo-bin --http-port=$PORT --http-interface=0.0.0.0 --db_host=$DB_HOST --db_port=$DB_PORT --db_user=$DB_USER --db_password=$DB_PASSWORD --no-database-list"]
