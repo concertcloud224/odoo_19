@@ -23,4 +23,4 @@ ENV DB_HOST=${DB_HOST} \
     DB_NAME=${DB_NAME}
 
 # IMPORTANT: koi --disable-root-warning ya extra unknown option NA ho
-CMD ["python3", "odoo-bin", "--http-port", "8080", "--http-interface", "0.0.0.0"]
+CMD ["python3", "odoo-bin", "--http-port=8069", "--db_host=${DB_HOST}", "--db_port=${DB_PORT}", "--db_user=${DB_USER}", "--db_password=${DB_PASSWORD}"]
