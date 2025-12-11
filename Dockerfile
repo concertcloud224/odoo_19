@@ -16,4 +16,4 @@ WORKDIR /usr/lib/python3/dist-packages/odoo
 # DB_* env vars Railway se aa jayenge,
 # Odoo khud environment se read karega, CLI se pass karne ki zaroorat nahi
 # Isliye simple CMD rakho
-CMD ["python3", "odoo-bin", "--http-port=8069"]
+CMD ["odoo", "--http-port=8069"]
