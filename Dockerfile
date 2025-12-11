@@ -2,14 +2,11 @@ FROM odoo:19
 
 USER root
 
-# Optional: extra libs
-# RUN pip3 install something
-
 USER odoo
 
 EXPOSE 8069
 
-CMD /usr/bin/odoo \
+CMD python3 odoo-bin \
     --http-port=8069 \
     --db_host="$DB_HOST" \
     --db_port="$DB_PORT" \
