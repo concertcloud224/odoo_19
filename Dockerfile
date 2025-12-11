@@ -7,6 +7,8 @@ USER root
 
 USER odoo
 
+EXPOSE 8069
+
 CMD /usr/bin/odoo \
     --http-port=8069 \
     --db_host="$DB_HOST" \
