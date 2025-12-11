@@ -1,35 +1,26 @@
-FROM python:3.11-slim
+FROM odoo:19
 
-ENV PYTHONUNBUFFERED=1
+# (agar tumhein extra Python libs ya custom addons copy karne hon
+#  to yahan USER root karke apt/pip install kar sakte ho)
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    libjpeg-dev \
-    zlib1g-dev \
-    libxml2-dev \
-    libxslt1-dev \
-    libldap2-dev \
-    libsasl2-dev \
-    libffi-dev \
-    libssl-dev \
-    && rm -rf /var/lib/apt/lists/*
+USER root
+# yahan apne custom packages / addons waqera install karo
+# example:
+# COPY ./addons /mnt/extra-addons
 
-WORKDIR /app
-COPY . /app
+# non-root user bana ke usi se Odoo run karna
+RUN useradd -m odoo && mkdir -p /var/lib/odoo /var/log/odoo && \
+    chown -R odoo /var/lib/odoo /var/log/odoo /usr/lib/python3 /etc/odoo || true
 
-RUN pip install --upgrade pip && \
-    pip install wheel && \
-    pip install -r requirements.txt
-
-# 👉 yahan non-root user bana ke use par switch kar rahe hain
-RUN useradd -m odoo && chown -R odoo /app
 USER odoo
+WORKDIR /usr/lib/python3/dist-packages/odoo  # ya jahan odoo-bin hai
 
-CMD ["bash", "-c", "python odoo-bin \
-    --http-port=$PORT \
-    --http-interface=0.0.0.0 \
-    --db_host=$DB_HOST \
-    --db_port=$DB_PORT \
-    --db_user=$DB_USER \
-    --db_password=$DB_PASSWORD"]
+# ENV sirf reference ke liye, Odoo env se hi read karega
+ENV DB_HOST=${DB_HOST} \
+    DB_PORT=${DB_PORT} \
+    DB_USER=${DB_USER} \
+    DB_PASSWORD=${DB_PASSWORD} \
+    DB_NAME=${DB_NAME}
+
+# IMPORTANT: koi --disable-root-warning ya extra unknown option NA ho
+CMD ["python3", "odoo-bin", "--http-port", "8080", "--http-interface", "0.0.0.0"]
