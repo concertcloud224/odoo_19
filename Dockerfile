@@ -1,26 +1,19 @@
 FROM odoo:19
 
-# (agar tumhein extra Python libs ya custom addons copy karne hon
-#  to yahan USER root karke apt/pip install kar sakte ho)
-
+# Agar tumhein koi extra packages waghera install karne hon
+# to yahan USER root karke apt/pip use kar sakte ho
 USER root
-# yahan apne custom packages / addons waqera install karo
 # example:
+# RUN pip3 install some-lib
 # COPY ./addons /mnt/extra-addons
 
-# non-root user bana ke usi se Odoo run karna
-RUN useradd -m odoo && mkdir -p /var/lib/odoo /var/log/odoo && \
-    chown -R odoo /var/lib/odoo /var/log/odoo /usr/lib/python3 /etc/odoo || true
-
+# Ab wapis Odoo ka normal user use karein
 USER odoo
-WORKDIR /usr/lib/python3/dist-packages/odoo  # ya jahan odoo-bin hai
 
-# ENV sirf reference ke liye, Odoo env se hi read karega
-ENV DB_HOST=${DB_HOST} \
-    DB_PORT=${DB_PORT} \
-    DB_USER=${DB_USER} \
-    DB_PASSWORD=${DB_PASSWORD} \
-    DB_NAME=${DB_NAME}
+# Odoo ka kaam karne wala folder
+WORKDIR /usr/lib/python3/dist-packages/odoo
 
-# IMPORTANT: koi --disable-root-warning ya extra unknown option NA ho
-CMD ["python3", "odoo-bin", "--http-port=8069", "--db_host=${DB_HOST}", "--db_port=${DB_PORT}", "--db_user=${DB_USER}", "--db_password=${DB_PASSWORD}"]
+# DB_* env vars Railway se aa jayenge,
+# Odoo khud environment se read karega, CLI se pass karne ki zaroorat nahi
+# Isliye simple CMD rakho
+CMD ["python3", "odoo-bin", "--http-port=8069"]
